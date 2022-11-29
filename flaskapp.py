@@ -2,7 +2,7 @@
 # Name:        flaskapp
 # Purpose:     Demonstrate web development with Flask
 #
-# Author:      Rula Khayrallah
+# Author:      Constantin Khamis
 # ----------------------------------------------------------------------
 """
 Module containing a starter web application.
@@ -15,11 +15,16 @@ from flask import Flask, request, render_template
 app = Flask(__name__)
 
 @app.route('/')
+@app.route('/home')
 def welcome():
-    return "Welcome to CS 122!"
+    return render_template('home.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 def main():
-    app.run()
+    app.run(debug=True)
 
 if __name__ == "__main__":
     main()
