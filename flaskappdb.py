@@ -13,13 +13,13 @@ Point your browser to http://localhost:5000/
 """
 from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cs122.db'
 db = SQLAlchemy(app)
 
 
 class Review(db.Model):
-
     """
     Class to represent and access the review table.
     Attributes:
@@ -39,16 +39,17 @@ class Review(db.Model):
 def welcome():
     return render_template('home.html')
 
+
 @app.route('/about')
 def about():
     results = Review.query.all()
-    return render_template('about.html', results=results)
+    return render_template('about.html', results=reversed(results))
 
 
 @app.route('/review', methods=["POST", "GET"])
 def review():
     if request.method == "POST":
-        comment_input= request.form.get('comment')
+        comment_input = request.form.get('comment')
         grade_input = request.form.get('grade')
         new_review = Review(comment=comment_input, grade=grade_input)
         db.session.add(new_review)
@@ -56,6 +57,39 @@ def review():
 
     return render_template('review.html')
 
+
+@app.route('/more', methods=["POST", "GET"])
+def more():
+    results = []
+    grade = ''
+    if request.method == "POST":
+        grade = request.form.get('grade')
+        query = Review.query
+        if grade:
+            query = Review.query.filter(Review.grade == grade)
+        results = query.all()
+    return render_template('more.html', results=results, grade=grade)
+
+@app.route('/delete', methods=["POST", "GET"])
+def delete():
+    if request.method == "PSOT":
+        id = request.form.get('id')
+        to_delete = Review.query.get(id)
+        if to_delete:
+            db.session.delete(to_delete)
+            db.session.commit()
+    return render_template('delete.html')
+
+@app.route('/update', methods=["POST", "GET"])
+def update():
+    if request.method == "POST":
+        id = request.form.get(id)
+        to_update = Review.query.get(id)
+        if to_update:
+            to_update.comment = request.form.get('comment')
+            to_update.grade = request.form.get('grade')
+            db.session.commit()
+    return render_template('update.html')
 def main():
     app.run(debug=True)
 

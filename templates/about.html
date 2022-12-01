@@ -8,7 +8,21 @@
     <h1>CS 122 Course Description</h1>
     <p>Advanced features of the Python programming language with
         emphasis on programming practice.</p>
-        <p><a href="/home">Home</a></p>
-
+    <p><a href="/home">Home</a></p>
+    {% if results %}
+    <h2>Results</h2>
+    <table>
+        <tr>
+            <th>Grade</th>
+            <th>Comment</th>
+        </tr>
+        {% for results in results %}
+        <tr>
+            <td>{{results.grade}}</td>
+            <td>{{results.comment}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
 </body>
 </html>
